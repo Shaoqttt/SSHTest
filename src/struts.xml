@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+	<package name="ssh2" extends="struts-default">
+		<interceptors>
+			<interceptor name="checkLogin" class="checkLoginInterceptor" />
+			<interceptor-stack name="myInterceptor">
+				<interceptor-ref name="checkLogin" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+
+		<global-results>
+			<result name="checkLoginFail">/login.jsp</result>
+
+		</global-results>
+
+		<action name="loginUser" class="loginUserAciton">
+			<result name="success">/index.jsp</result>
+			<result name="fales">/login.jsp</result>
+			<result name="login">/login.jsp</result>
+		</action>
+
+		<action name="createImageAction" class="createImageAction"
+			method="execute">
+			<result name="success" type="stream">
+				<param name="contentType">image/jpeg</param>
+				<param name="inputName">inputStream</param>
+			</result>
+		</action>
+
+		<action name="*_*" class="userAction" method="{1}">
+			<result name="success" type="redirect">/{2}.jsp</result>
+			<result name="listuser">/list.jsp</result>
+			<result name="listUser" type="redirect">listUser.action</result>
+			<result name="updateuser">/update.jsp</result>
+			<interceptor-ref name="myInterceptor" />
+		</action>
+		
+		
+		<action name="passEmail" class="passEmailAction">
+			<result name="success">/login.jsp</result>
+			<result name="false">/getPass.jsp</result>
+			<result name="changepass">/changepass.jsp</result>
+		</action>
+		
+	</package>
+
+</struts>

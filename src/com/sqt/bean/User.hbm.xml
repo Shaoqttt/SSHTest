@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+          "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+          "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	 <class name="com.sqt.bean.User" table="tb_Users" schema="db_hibernate"> 
+	
+		<id name="id" type="int" column="ID">
+			<generator class="increment"></generator>
+		</id>
+		
+		<property name="firstName" column="firstName" type="string"></property>
+		<property name="lastName" column="lastName" type="string"></property>
+		<property name="age" column="age" type="int"></property>
+		<property name="email" column="email" type="string"></property>
+		<property name="validataCode" column="validataCode" type="string"></property>
+		<property name="outDate" column="outDate" type="string"></property>
+		
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,15 @@
+@CHARSET "UTF-8";
+
+
+.p{
+	font-size: 10px;
+}
+.box{
+	background-color: "#00ffff";
+	width: 100px;
+	height: 100px;
+}
+#password
+{
+	background-color: "#00ffff";
+}

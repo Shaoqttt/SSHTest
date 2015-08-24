@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	
+	<!-- 想到与Hibernate的hibernate.cfg.xml -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName">
+			<value>org.gjt.mm.mysql.Driver</value>
+		</property>
+		
+		<property name="url">
+			<value>jdbc:mysql://127.0.0.1:3306/db_hibernate</value>
+		</property>
+		
+		<property name="username">
+			<value>root</value>
+		</property>
+		
+		<property name="password">
+			<value>123456</value>
+		</property>
+		
+	</bean>
+
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref local="dataSource"/>
+		</property>
+		
+		<property name="mappingResources">
+			<list>
+				<value>com/sqt/bean/User.hbm.xml</value>					
+			</list>
+		</property>
+		
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory">
+			<ref local="sessionFactory"/>
+		</property>
+	</bean>
+	
+	<bean id="userDAO" class="com.sqt.dao.impl.UserDAOImpl" scope="singleton">
+		<property name="sessionFactory">
+			<ref local="sessionFactory"/>
+		</property>
+	</bean>
+	
+	<bean name="user" class="com.sqt.bean.User"></bean> 
+	
+	<bean id="userServiceTarget" class="com.sqt.service.impl.UserServiceImpl" scope="singleton">
+		<property name="dao" ref="userDAO" />
+	</bean>
+	
+	<bean id="userService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="target">
+			<ref local="userServiceTarget"/>
+		</property>
+		
+		<property name="transactionManager">
+			<ref local="transactionManager"/>
+		</property>
+		
+		<property name="transactionAttributes">
+			<props>
+				<prop key="find*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean name="checkLoginInterceptor" class="com.sqt.interceptor.CheckLogin" scope="singleton">
+		<property name="userService" ref="userService"></property>
+	</bean>
+
+	
+	<bean id="loginUserAciton" class="com.sqt.action.user.LoginUserAction" scope="prototype">
+		<property name="userService" ref="userService"></property>
+	</bean>
+	
+	<bean id="passEmailAction" class="com.sqt.action.user.PassEmailAction" scope="prototype">
+		<property name="userService" ref="userService"></property>
+		<property name="user" ref="user"></property>
+	</bean>
+	
+	<bean id="createImageAction" class="com.sqt.action.user.CreateImageAction" scope="prototype">
+	</bean>
+	
+	<bean name="userAction" class="com.sqt.action.user.userMainAction" scope="prototype">
+		<property name="userService" ref="userService"></property>
+		<property name="user" ref="user"></property>
+	</bean>
+</beans>
